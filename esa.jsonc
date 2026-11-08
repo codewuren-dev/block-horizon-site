@@ -1,0 +1,9 @@
+{
+  "name": "block-horizon-site",
+  "installCommand": "",
+  "buildCommand": "",
+  "assets": {
+    "directory": "./website",
+    "notFoundStrategy": "singlePageApplication"
+  }
+}

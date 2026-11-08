@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>方块视界 Block Horizon · 开源 Minecraft 启动器</title>
+<meta name="description" content="方块视界（Block Horizon）是一款免费开源的 Minecraft Java 版启动器：实例隔离、一键安装整合包、微软正版登录、国内镜像加速。">
+<style>
+  :root {
+    --bg: #0b1020;
+    --bg-soft: #121a30;
+    --panel: rgba(255, 255, 255, 0.04);
+    --border: rgba(255, 255, 255, 0.09);
+    --text: #e8ecf6;
+    --text-dim: #9aa7c4;
+    --accent: #f7b25a;
+    --accent-deep: #e88b3c;
+    --sky-top: #070b18;
+    --sky-mid: #1a2342;
+    --sunset: #d96f32;
+    --ok: #7fd18c;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "PingFang SC", "Microsoft YaHei", "Segoe UI", sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+  }
+
+  /* ===== 黄昏地平线 Hero：夜空渐变 + 霞光，与启动器图标同一视觉母题 ===== */
+  .hero {
+    position: relative;
+    min-height: 62vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 80px 24px 96px;
+    background:
+      radial-gradient(ellipse 90% 45% at 50% 100%, rgba(217, 111, 50, 0.35), transparent 70%),
+      radial-gradient(ellipse 60% 30% at 50% 96%, rgba(247, 178, 90, 0.28), transparent 75%),
+      linear-gradient(180deg, var(--sky-top) 0%, var(--sky-mid) 58%, #3a2f4e 82%, var(--sunset) 100%);
+    overflow: hidden;
+  }
+  .hero::before {
+    /* 星空 */
+    content: "";
+    position: absolute; inset: 0;
+    background-image:
+      radial-gradient(1px 1px at 20% 18%, rgba(255,255,255,.8), transparent),
+      radial-gradient(1px 1px at 68% 12%, rgba(255,255,255,.7), transparent),
+      radial-gradient(1.5px 1.5px at 40% 30%, rgba(255,255,255,.6), transparent),
+      radial-gradient(1px 1px at 85% 26%, rgba(255,255,255,.55), transparent),
+      radial-gradient(1px 1px at 55% 40%, rgba(255,255,255,.45), transparent),
+      radial-gradient(1.5px 1.5px at 12% 42%, rgba(255,255,255,.5), transparent);
+    pointer-events: none;
+  }
+  .hero h1 {
+    font-size: clamp(2.2rem, 6vw, 3.6rem);
+    letter-spacing: 0.06em;
+    text-shadow: 0 2px 24px rgba(217, 111, 50, 0.35);
+  }
+  .hero .en {
+    display: block;
+    font-size: clamp(0.9rem, 2.4vw, 1.15rem);
+    letter-spacing: 0.5em;
+    color: var(--text-dim);
+    margin-top: 6px;
+    text-transform: uppercase;
+  }
+  .hero p.tagline {
+    max-width: 620px;
+    margin: 22px auto 0;
+    color: var(--text-dim);
+    font-size: 1.02rem;
+  }
+  .hero .actions { margin-top: 36px; display: flex; gap: 14px; flex-wrap: wrap; justify-content: center; }
+  .btn {
+    display: inline-block;
+    padding: 13px 30px;
+    border-radius: 10px;
+    font-size: 1rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: transform .15s ease, box-shadow .15s ease;
+  }
+  .btn:hover { transform: translateY(-2px); }
+  .btn-primary {
+    background: linear-gradient(135deg, var(--accent), var(--accent-deep));
+    color: #1a1206;
+    box-shadow: 0 6px 24px rgba(232, 139, 60, 0.35);
+  }
+  .btn-ghost { color: var(--text); border: 1px solid var(--border); background: var(--panel); }
+
+  main { max-width: 980px; margin: 0 auto; padding: 0 24px 80px; }
+  section { margin-top: 72px; }
+  h2 { font-size: 1.5rem; letter-spacing: 0.04em; margin-bottom: 8px; }
+  h2 + .sub { color: var(--text-dim); font-size: 0.95rem; margin-bottom: 28px; }
+
+  .features {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 16px;
+  }
+  .card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 22px 24px;
+  }
+  .card h3 { font-size: 1.05rem; margin-bottom: 8px; color: var(--accent); }
+  .card p { color: var(--text-dim); font-size: 0.94rem; }
+
+  .log {
+    border-left: 2px solid var(--border);
+    margin-left: 6px;
+    padding-left: 22px;
+  }
+  .log .entry { position: relative; padding-bottom: 26px; }
+  .log .entry::before {
+    content: "";
+    position: absolute;
+    left: -28px; top: 8px;
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 0 4px rgba(247, 178, 90, 0.18);
+  }
+  .log .ver { font-weight: 700; }
+  .log .date { color: var(--text-dim); font-size: 0.85rem; margin-left: 10px; }
+  .log ul { margin: 8px 0 0 18px; color: var(--text-dim); font-size: 0.93rem; }
+
+  .links {
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+    margin-top: 20px;
+  }
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 28px 24px;
+    text-align: center;
+    color: var(--text-dim);
+    font-size: 0.88rem;
+  }
+  footer a { color: var(--accent); text-decoration: none; }
+  a.inline { color: var(--accent); text-decoration: none; }
+  a.inline:hover { text-decoration: underline; }
+
+  .pill {
+    display: inline-block;
+    padding: 4px 14px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: var(--panel);
+    color: var(--text-dim);
+    font-size: 0.82rem;
+    margin-bottom: 18px;
+  }
+  .pill b { color: var(--ok); font-weight: 600; }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <h1>方块视界<span class="en">Block Horizon</span></h1>
+  <p class="tagline">免费开源的 Minecraft Java 版启动器——实例隔离、整合包一键安装、微软正版登录、国内镜像加速，装完即玩。</p>
+  <div class="actions">
+    <a class="btn btn-primary" href="https://gitee.com/codewuren/block-horizon-pack/releases" rel="noopener">下载最新版本</a>
+    <a class="btn btn-ghost" href="https://gitee.com/codewuren/block-horizon-launcher" rel="noopener">查看源代码</a>
+  </div>
+</header>
+
+<main>
+  <section>
+    <span class="pill">当前公开版本 <b>v0.14.25 · Preview 11</b> · Windows 7 及以上（x64 / arm64）</span>
+    <h2>它擅长什么</h2>
+    <p class="sub">每一个能力都有自动化探针守着——「测过的就是用户点的」。</p>
+    <div class="features">
+      <div class="card"><h3>实例隔离</h3><p>每个实例独立的 mods / saves / 配置，多整合包互不干扰；也支持隔离共享的轻量模式。</p></div>
+      <div class="card"><h3>整合包一键安装</h3><p>支持 .mrpack 与普通 zip 增量安装，装完自动过完整性校验，坏档不交付。</p></div>
+      <div class="card"><h3>国内镜像加速</h3><p>BMCLAPI 全量镜像（版本 / 库 / 客户端 / 资源），失败自动回落官方源，下载可随时取消。</p></div>
+      <div class="card"><h3>崩溃取证</h3><p>启动崩溃自动收集报告并给出人话结论，日志流触发、只认本次启动的报告。</p></div>
+      <div class="card"><h3>第三方 / 离线登录</h3><p>authlib-injector 外置登录开箱即用，离线账号与官方离线规则完全一致。</p></div>
+      <div class="card"><h3>开源与克制</h3><p>MIT 协议、核心层零 UI 依赖；零代码复制 PCL / HMCL，功能边界写得清清楚楚。</p></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>更新日志</h2>
+    <p class="sub">完整日志见仓库 <a class="inline" href="https://gitee.com/codewuren/block-horizon-launcher/blob/master/CHANGELOG.md" rel="noopener">CHANGELOG.md</a>。</p>
+    <div class="log">
+      <div class="entry">
+        <span class="ver">0.14.31</span><span class="date">2026-11-08 · 开发版</span>
+        <ul>
+          <li>修复实例元数据读写格式不一致导致的「下载后资源缺失」误报——文件其实完好无损</li>
+          <li>微软登录链路补齐实弹验证与 403 分诊（应用注册 / 网络 / 账号三类原因分开提示）</li>
+        </ul>
+      </div>
+      <div class="entry">
+        <span class="ver">0.14.30</span><span class="date">2026-11-08 · 开发版</span>
+        <ul><li>BMCLAPI 模式下客户端 jar 镜像化，修复国内安装不完整问题；客户端页下载/更新支持取消</li></ul>
+      </div>
+      <div class="entry">
+        <span class="ver">0.14.25 · Preview 11</span><span class="date">2026-11-08</span>
+        <ul><li>微软正版登录修复（设备代码流），删除账号两步确认</li></ul>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>参与进来</h2>
+    <p class="sub">问题反馈、功能建议、代码贡献都欢迎。</p>
+    <div class="links">
+      <a class="btn btn-ghost" href="https://gitee.com/codewuren/block-horizon-launcher" rel="noopener">Gitee 主仓</a>
+      <a class="btn btn-ghost" href="https://gitee.com/codewuren/block-horizon-pack/releases" rel="noopener">发行版下载</a>
+    </div>
+  </section>
+</main>
+
+<footer>
+  Block Horizon · MIT License · 用 <span style="color:var(--accent)">♥</span> 与 .NET 构建
+</footer>
+
+</body>
+</html>
