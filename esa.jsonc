@@ -1,7 +1,8 @@
 {
   "name": "block-horizon-site",
-  "installCommand": "",
-  "buildCommand": "",
+  "//": "文档说 installCommand/buildCommand 置空串应跳过对应步骤；实测 2026-11-08 空的 buildCommand 仍被默认成 npm run build（纯静态仓无 package.json → ENOENT）。改显式无害命令双保险：无论空串语义如何，两步都成功退出。",
+  "installCommand": "echo no-dependencies: static site",
+  "buildCommand": "echo no-build: assets served as-is",
   "assets": {
     "directory": "./website",
     "notFoundStrategy": "singlePageApplication"
