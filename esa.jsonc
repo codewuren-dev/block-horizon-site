@@ -4,7 +4,7 @@
   "installCommand": "echo no-dependencies: static site",
   "buildCommand": "echo no-build: assets served as-is",
   "assets": {
-    "directory": "./website",
+    "directory": "./",
     "notFoundStrategy": "singlePageApplication"
   }
 }
