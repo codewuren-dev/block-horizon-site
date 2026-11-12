@@ -175,7 +175,7 @@
 
 <main>
   <section>
-    <span class="pill">当前公开版本 <b>v0.14.35</b> · Windows 7 及以上（x64 / arm64）</span>
+    <span class="pill">当前公开版本 <b>v0.14.37</b> · Windows 7 及以上（x64 / arm64）</span>
     <h2>它擅长什么</h2>
     <p class="sub">每一个能力都有自动化探针守着——「测过的就是用户点的」。</p>
     <div class="features">
@@ -192,6 +192,21 @@
     <h2>更新日志</h2>
     <p class="sub">完整日志见仓库 <a class="inline" href="https://gitee.com/codewuren/block-horizon-launcher/blob/master/CHANGELOG.md" rel="noopener">CHANGELOG.md</a>。</p>
     <div class="log">
+      <div class="entry">
+        <span class="ver">0.14.37</span><span class="date">2026-11-13 · 正式发布</span>
+        <ul>
+          <li>修复「更新到最新」界面报失败但磁盘实际成功：跨线程 UI 访问改走 UI 线程派发，完成后自动校验移出繁忙守卫</li>
+          <li>官方客户端固定稳定版通道，整合包清单升级到 v1.1.11：一键下载补齐 TaCZ 枪包与自制标题资源包</li>
+          <li>四平台发布包齐全，启动器内「立即检查」可从旧版自动更新到本版</li>
+        </ul>
+      </div>
+      <div class="entry">
+        <span class="ver">0.14.36</span><span class="date">2026-11-09 · 稳定版通道</span>
+        <ul>
+          <li>客户端下载与更新只保留稳定版通道：移除 beta / stable 分段控件，清单地址固定为 client/stable/pack.json</li>
+          <li>修正版本号对齐型更新（零行差集）的空态引导文案，新增更新链路实弹探针</li>
+        </ul>
+      </div>
       <div class="entry">
         <span class="ver">0.14.35</span><span class="date">2026-11-09 · 更新通道</span>
         <ul>
